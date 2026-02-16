@@ -1,0 +1,9 @@
+1. Set required values before install:
+   - env.DATABASE_URL
+   - env.ORIGIN
+
+2. Install:
+   helm install <release-name> .
+
+3. Upgrade:
+   helm upgrade <release-name> . --install
