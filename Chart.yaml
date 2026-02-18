@@ -2,5 +2,5 @@ apiVersion: v2
 name: tags-pub
 description: Helm chart for deploying ghcr.io/social-web-foundation/tags.pub
 type: application
-version: 0.2.0
-appVersion: 0.4.0
+version: 0.3.0
+appVersion: 0.5.0
