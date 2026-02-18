@@ -43,19 +43,31 @@ env:
 
 extraEnv: []
 
+startupProbe:
+  enabled: true
+  httpGet:
+    path: /livez
+    port: http
+  periodSeconds: 5
+  failureThreshold: 30
+
 livenessProbe:
   enabled: true
-  tcpSocket:
+  httpGet:
+    path: /livez
     port: http
-  initialDelaySeconds: 10
+  initialDelaySeconds: 15
   periodSeconds: 10
+  failureThreshold: 3
 
 readinessProbe:
   enabled: true
-  tcpSocket:
+  httpGet:
+    path: /readyz
     port: http
   initialDelaySeconds: 5
   periodSeconds: 10
+  failureThreshold: 6
 
 resources: {}
 
