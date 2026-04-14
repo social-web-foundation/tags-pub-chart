@@ -47,6 +47,12 @@ spec:
               value: {{ .Values.env.PORT | default "9000" | quote }}
             - name: LOG_LEVEL
               value: {{ .Values.env.LOG_LEVEL | default "info" | quote }}
+            - name: TRUST_PROXY
+              value: {{ .Values.env.TRUST_PROXY | default 1 | quote }}
+            {{- with .Values.env.REDIS_URL }}
+            - name: REDIS_URL
+              value: {{ . | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
