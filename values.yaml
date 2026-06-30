@@ -43,6 +43,14 @@ env:
 
 extraEnv: []
 
+# Domain blocklist: mounts a Mastodon-format denylist CSV (read via .Files from
+# the chart directory) into the pod and points DOMAIN_BLOCK_LIST at it. The pod
+# template carries a checksum annotation so changes to the file roll the pods.
+domainBlockList:
+  enabled: false
+  file: domain-blocklist.csv
+  mountDir: /etc/tags-pub/blocklist
+
 startupProbe:
   enabled: true
   httpGet:

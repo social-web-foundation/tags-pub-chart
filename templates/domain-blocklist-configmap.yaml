@@ -1,0 +1,10 @@
+{{- if .Values.domainBlockList.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tags-pub.fullname" . }}-domain-blocklist
+  labels:
+    {{- include "tags-pub.labels" . | nindent 4 }}
+data:
+{{ (.Files.Glob .Values.domainBlockList.file).AsConfig | indent 2 }}
+{{- end }}

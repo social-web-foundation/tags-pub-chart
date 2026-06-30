@@ -16,9 +16,14 @@ spec:
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.podAnnotations }}
+      {{- if or .Values.podAnnotations .Values.domainBlockList.enabled }}
       annotations:
+        {{- if .Values.domainBlockList.enabled }}
+        checksum/domain-blocklist: {{ .Files.Get .Values.domainBlockList.file | sha256sum | quote }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
     spec:
       serviceAccountName: {{ include "tags-pub.serviceAccountName" . }}
@@ -53,6 +58,10 @@ spec:
             - name: REDIS_URL
               value: {{ . | quote }}
             {{- end }}
+            {{- if .Values.domainBlockList.enabled }}
+            - name: DOMAIN_BLOCK_LIST
+              value: {{ printf "%s/%s" .Values.domainBlockList.mountDir (base .Values.domainBlockList.file) | quote }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -70,6 +79,18 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.domainBlockList.enabled }}
+          volumeMounts:
+            - name: domain-blocklist
+              mountPath: {{ .Values.domainBlockList.mountDir | quote }}
+              readOnly: true
+          {{- end }}
+      {{- if .Values.domainBlockList.enabled }}
+      volumes:
+        - name: domain-blocklist
+          configMap:
+            name: {{ include "tags-pub.fullname" . }}-domain-blocklist
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
